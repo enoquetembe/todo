@@ -21,7 +21,9 @@ export default {
         "todo-danger": "#E25858",
       },
 
-      fontFamily: {},
+      fontFamily: {
+        inter: "'Inter', sans-serif",
+      },
     },
   },
   plugins: [],
