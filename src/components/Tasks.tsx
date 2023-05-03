@@ -1,5 +1,6 @@
 import { Task } from "./Task";
 import { ITask } from "../App";
+import { Clipboard, ClipboardText } from "phosphor-react";
 
 interface TasksProps {
   tasks: ITask[];
@@ -10,8 +11,6 @@ interface TasksProps {
 export function Tasks({ tasks, onDeleteTask, onCompleteTask }: TasksProps) {
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter((task) => task.isCompleted).length;
-
-  console.log(completedTasks);
 
   return (
     <section className=" w-full max-w-[46rem] mt-24">
@@ -32,18 +31,32 @@ export function Tasks({ tasks, onDeleteTask, onCompleteTask }: TasksProps) {
       </header>
 
       <div className="flex flex-col gap-3">
-        {tasks.map((task) => {
-          return (
-            <Task
-              key={task.id}
-              id={task.id}
-              title={task.title}
-              isCompleted={task.isCompleted}
-              onComplete={() => onCompleteTask(task.id)}
-              onDeleteTask={() => onDeleteTask(task.id)}
-            />
-          );
-        })}
+        {
+          tasks.length > 0 ? tasks.map((task) => {
+            return (
+              <Task
+                key={task.id}
+                id={task.id}
+                title={task.title}
+                isCompleted={task.isCompleted}
+                onComplete={() => onCompleteTask(task.id)}
+                onDeleteTask={() => onDeleteTask(task.id)}
+              />
+            );
+          }) : 
+          <div className="flex flex-col items-center text-center gap-4 text-base">
+            <ClipboardText size={56} className="text-todo-gray-400"/>
+            <div>
+              <p className="text-todo-gray-300 font-bold">
+                You don't have tasks registered yet
+              </p>
+
+              <p className="text-todo-gray-300">
+                Create tasks and organize your to-do items
+              </p>
+            </div>
+          </div>
+        }
       </div>
     </section>
   );

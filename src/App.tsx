@@ -1,8 +1,10 @@
 import { PlusCircle } from "phosphor-react";
 import { Header } from "./components/Header";
 import { Tasks } from "./components/Tasks";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+
+const LOCAL_STORAGE_KEY = "todo:tasks";
 
 export interface ITask {
   id: string;
@@ -18,9 +20,27 @@ export function App() {
     setNewTask(event.target.value);
   }
 
+  function loadSavedTasks() {
+    const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (saved) {
+      setTasks(JSON.parse(saved));
+    }
+  }
+
+  function setTasksAndSave(newTasks: ITask[]) {
+    setTasks(newTasks);
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newTasks));
+  }
+
+
+  useEffect(() => {
+    loadSavedTasks();
+  }, []);
+
+
   function handleCreateNewTask(event: FormEvent) {
     event.preventDefault();
-    setTasks([
+    setTasksAndSave([
       ...tasks,
       {
         id: uuidv4(),
@@ -28,11 +48,13 @@ export function App() {
         isCompleted: false,
       },
     ]);
+
+    setNewTask("");
   }
 
   function deleteTask(id: string) {
     const tasksWithoutDeletedOne = tasks.filter((task) => task.id !== id);
-    setTasks(tasksWithoutDeletedOne);
+    setTasksAndSave(tasksWithoutDeletedOne);
   }
 
   function handleToggleTask(id: string) {
@@ -64,10 +86,14 @@ export function App() {
             placeholder="Add new task"
             value={newTask}
             onChange={handleTaskChange}
+            required
             className="bg-todo-gray-500 p-4 w-full rounded-lg text-gray-100 placeholder:text-todo-gray-300 focus:outline-none focus:ring-2 focus:ring-todo-purple-dark"
           />
 
-          <button className="flex justify-center items-center gap-2 bg-todo-blue-dark text-white text-sm p-4 rounded-lg hover:bg-todo-blue transition-colors max-md:text-xl">
+          <button 
+            disabled={newTask.length===0}
+            className={`flex justify-center items-center gap-2 bg-todo-blue-dark text-white text-sm p-4 rounded-lg hover:bg-todo-blue transition-colors max-md:text-xl disabled:bg-todo-blue-dark disabled:hover:bg-todo-blue-dark disabled:cursor-not-allowed disabled:opacity-70`}
+          >
             Create <PlusCircle />
           </button>
         </form>
