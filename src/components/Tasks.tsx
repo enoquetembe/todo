@@ -1,6 +1,6 @@
 import { Task } from "./Task";
 import { ITask } from "../App";
-import { Clipboard, ClipboardText } from "phosphor-react";
+import { ClipboardText } from "phosphor-react";
 
 interface TasksProps {
   tasks: ITask[];
